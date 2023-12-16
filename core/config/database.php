@@ -21,16 +21,16 @@
 
 $this->config['Wdb'] = array(
     'driver'   => 'mysql',
-    'host'     => 'localhost',
+    'host'     => '203.159.172.53',
     'username' => 'root',
-    'password' => '',
-    'name'     => 'edtechfund'
+    'password' => '123qweASD',
+    'name'     => 'app_api'
 );
 
 $this->config['Rdb'] = array(
     'driver'   => 'mysql',
-    'host'     => 'localhost',
+    'host'     => '203.159.172.53',
     'username' => 'root',
-    'password' => '',
-    'name'     => 'edtechfund'
+    'password' => '123qweASD',
+    'name'     => 'app_api'
 );

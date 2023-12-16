@@ -5,9 +5,10 @@ class MainController extends Controller
 
     public function index()
     {
-        if (count($_SESSION) == 0 || $_SESSION['user']['isLogin'] == false) {
-            Site::redirect('/auth/login');
-        }
-        Site::redirect('/home');
+        $data = array(
+            'title' => 'Home',
+        );
+
+        $this->view('main/index', $data);
     }
 }

@@ -2,25 +2,28 @@
 
 class AuthModel extends Model
 {
-    public function checkCredential($email, $password)
+
+    public function check_credential($email, $password)
     {
-        $sql = "SELECT users.id, users.prefix, users.firstname, users.lastname, users.email, users.roles, users.position, divisions.id AS division_id, divisions.division_name, divisions.division_abbr, users.active, users.last_login, users.created_date, users.updated_date
-        FROM users
-        LEFT JOIN divisions
-        ON users.division = divisions.id
-        WHERE users.email = :email AND users.password = :password";
+        $sql = "SELECT id FROM users WHERE email = :email AND password = :password";
         $data = array(
             'email' => $email,
-            'password' => md5($password),
+            'password' => $password,
         );
-        $stmt = $this->Rdb->prepare($sql);
-        $this->bind($stmt, $data);
-        $stmt->execute();
-        $count = $stmt->rowCount();
-        if ($count > 0) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        } else {
+
+        try{
+            $stmt = $this->Rdb->prepare($sql);
+            $this->bind($stmt, $data);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($result) {
+                return $result;
+            } else {
+                return false;
+            }
+        } catch(PDOException $e) {
             return false;
         }
     }
+
 }

@@ -9,6 +9,11 @@
 
 abstract class Controller
 {
+    protected static $token = TOKEN;
+    protected $status;
+    protected $status_code;
+    protected $message;
+    protected $data;
 
     private $route  = [];
     private $args   = 0;
@@ -16,6 +21,9 @@ abstract class Controller
 
     function __construct()
     {
+        $this->accept_type();
+        $this->request_token(self::$token);
+
         $this->route = explode('/', URI);
         $this->args  = count($this->route);
         $this->router();
@@ -109,5 +117,59 @@ abstract class Controller
         require(ROOT . '/app/views/template/navbar.php');
         require(ROOT . '/app/views/' . $path . '.php');
         require(ROOT . '/app/views/template/adminFooter.php');
+    }
+
+
+    protected function request_token($token) {
+        $headers = apache_request_headers();
+        $access_token = $headers['Authorization'];
+
+        if($access_token == '') {
+            $this->status = 'error';
+            $this->status_code = 401;
+            $this->message = 'Access token required';
+            $this->api_response();
+        }
+
+        if($access_token != $token) {
+            $this->status = 'error';
+            $this->status_code = 401;
+            $this->message = 'Invalid access token';
+            $this->api_response();
+        }
+    }
+
+    protected function accept_type() {
+        $headers = apache_request_headers();
+        $accept_type = $headers['Accept'];
+
+        if($accept_type != 'application/json') {
+            $this->status = 'error';
+            $this->status_code = 406;
+            $this->message = 'Accept type not allowed';
+            $this->api_response();
+        }
+    }
+
+    protected function check_method($method) {
+        if($_SERVER['REQUEST_METHOD'] != $method) {
+            $this->status = 'error';
+            $this->status_code = 405;
+            $this->message = 'Method not allowed';
+            $this->api_response();
+        }
+    }
+ 
+    protected function api_response() {
+        $response = array(
+            'status' => $this->status,
+            'status_code' => $this->status_code,
+            'message' => $this->message,
+            'data' => $this->data
+        );
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
     }
 }

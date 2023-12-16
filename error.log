@@ -88,3 +88,4 @@
 [2023-10-25 15:05:02] [ERROR] [::1] SQLSTATE[HY000] [2002] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
 [2023-10-25 15:05:23] [ERROR] [::1] SQLSTATE[HY000] [2002] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
 [2023-11-02 09:00:29] [ERROR] [::1] SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it
+[2023-12-17 02:55:33] [ERROR] [::1] SQLSTATE[HY000] [1045] Access denied for user 'root'@'49.237.12.147' (using password: NO)

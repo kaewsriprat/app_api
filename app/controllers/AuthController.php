@@ -5,68 +5,47 @@ class AuthController extends Controller
 
     public function index(): void
     {
-
-        Site::redirect('/auth/login');
-
+        echo "Hello from AuthController";
     }
-
 
     public function login()
     {
-        if (isset($_SESSION['isLogin'])) {
-            Site::redirect('/admin');
-        }
 
-        $error = null;
-        if (count($_POST) > 0) {
-            $email = trim($_POST['emailInput']);
-            $password = trim($_POST['passwordInput']);
-            if ($email == '' || $password == '') {
-                $error = "Invalid email or password";
-            }
+        $this->check_method('POST');
+
+        if (
+            !isset($_POST['email']) || !isset($_POST['password'])
+            || $_POST['email'] == '' || $_POST['password'] == ''
+            || $_POST['email'] == null || $_POST['password'] == null
+            ) {
+
+            $this->status = 'error';
+            $this->status_code = 400;
+            $this->message = 'Please fill all fields';
+            $this->api_response();
+   
+        } else {
+
             $this->model('AuthModel');
-            $credential = $this->AuthModel->checkCredential($email, $password);
+            $this->model('UsersModel');
+            $result = $this->AuthModel->check_credential(
+                trim($_POST['email']),
+                md5(trim($_POST['password'])),
+            );
 
-            if ($credential) {
-                $this->createSession($credential);
-                Site::redirect('/admin');
+            if($result) {
+                $this->status = 'success';
+                $this->status_code = 200;
+                $this->message = 'Login success';
+                $this->data = $this->UsersModel->get_user_by_id($result['id']);
+                $this->api_response();
             } else {
-                $error = "Invalid email or password";
+                $this->status = 'error';
+                $this->status_code = 400;
+                $this->message = 'Login failed';
+                $this->api_response();
             }
         }
-
-        $data = array(
-            'title' => 'Login',
-            'error' => $error,
-        );
-
-        $this->view('auth/login', $data);
-    }
-
-    private function createSession($user)
-    {
-        session_start();
-        $_SESSION['user']['isLogin'] = true;
-        $_SESSION['user']['id'] = $user['id'];
-        $_SESSION['user']['prefix'] = $user['prefix'];
-        $_SESSION['user']['firstname'] = $user['firstname'];
-        $_SESSION['user']['lastname'] = $user['lastname'];
-        $_SESSION['user']['fullname'] = $user['prefix'] . $user['firstname'] . ' ' . $user['lastname'];
-        $_SESSION['user']['email'] = $user['email'];
-        $_SESSION['user']['position'] = $user['position'];
-        $_SESSION['user']['office_id'] = $user['office_id'];
-        $_SESSION['user']['roles'] = explode(',', $user['roles']);
-        $_SESSION['user']['active'] = $user['active'];
-        $_SESSION['user']['last_login'] = $user['last_login'];
-        $_SESSION['user']['created_date'] = $user['created_date'];
-        $_SESSION['user']['updated_date'] = $user['updated_date'];
-    }
-
-    public function logout()
-    {
-        session_start();
-        session_destroy();
-        Site::redirect('/auth/login');
     }
 }
 
