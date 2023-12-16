@@ -1,0 +1,15 @@
+{
+    "name": "kaews/api",
+    "autoload": {
+        "psr-4": {
+            "Kaews\\Api\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tong",
+            "email": "apichartk@sueksa.go.th"
+        }
+    ],
+    "require": {}
+}
