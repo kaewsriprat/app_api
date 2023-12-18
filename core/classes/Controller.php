@@ -122,7 +122,14 @@ abstract class Controller
 
     protected function request_token($token) {
         $headers = apache_request_headers();
-        $access_token = $headers['Authorization'];
+        //read Authorization or authorization header
+        if(isset($headers['Authorization'])) {
+            $access_token = $headers['Authorization'];
+        } else if(isset($headers['authorization'])) {
+            $access_token = $headers['authorization'];
+        } else {
+            $access_token = '';
+        }
 
         if($access_token == '') {
             $this->status = 'error';
@@ -141,7 +148,14 @@ abstract class Controller
 
     protected function accept_type() {
         $headers = apache_request_headers();
-        $accept_type = $headers['Accept'];
+        
+        if(isset($headers['Accept'])) {
+            $accept_type = $headers['Accept'];
+        } else if(isset($headers['accept'])) {
+            $accept_type = $headers['accept'];
+        } else {
+            $accept_type = '';
+        }
 
         if($accept_type != 'application/json') {
             $this->status = 'error';
