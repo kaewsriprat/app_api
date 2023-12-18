@@ -21,7 +21,7 @@ abstract class Controller
 
     function __construct()
     {
-        $this->accept_type();
+        // $this->accept_type();
         $this->request_token(self::$token);
 
         $this->route = explode('/', URI);
